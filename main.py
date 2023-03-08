@@ -1,10 +1,6 @@
 import logging
-#import aiogram
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
-#import random
-#import datetime
-#from datetime import datetime, timedelta
 import time
 import requests
 import json
@@ -19,7 +15,6 @@ def get_filters(id_category, city_from_message):
     for i in range(len(city_ids)):
         if city_ids[i]["cityNameRu"] == city_from_message:
             desired_city = city_ids[i]["cityId"]
-            print(desired_city)
 
     cookies = {
         'MVID_ACTOR_API_AVAILABILITY': 'true',
@@ -304,12 +299,6 @@ def get_urls():
                 #urls.append(["https://www.mvideo.ru/products/" + f'{info_of_products[i][j]["nameTranslit"]}' + f'-{info_of_products[i][j]["productId"]}', info_of_products[i][j]["productId"]])
                 urls.append({"URL": "https://www.mvideo.ru/products/" + f'{info_of_products[i][j]["nameTranslit"]}' + f'-{info_of_products[i][j]["productId"]}', "id": info_of_products[i][j]["productId"]})
         json.dump(urls, f, indent=5, ensure_ascii=False)
-    #with open('urls_products.json', 'w') as f:
-        '''for y in range(len(info_of_products)):
-            for t in range(len(info_of_products[y])):
-                for g in range(len(urls)):
-                    if info_of_products[y][t]["productId"] == urls[g][1]:
-                        info_of_products[y][t]["URL"] = urls[g][0]'''
     return urls
 
 
@@ -697,13 +686,6 @@ def get_id(id_from_filter_message, city_from_message, list_for_filterparams):
             except requests.exceptions.TooManyRedirects:
                 pass
         json.dump(l, file, indent=5, ensure_ascii=False)
-
-        '''for i in range(len(l)):
-            for j in range(len(l[i])):
-                id.append(l[i][j])
-        del l
-        json.dump(id, file, indent=5, ensure_ascii=False)
-        return id'''
         return l
 
 
@@ -816,7 +798,6 @@ def get_info_products(id_from_filter_message, city_from_message, list_for_filter
 
     id = get_id(id_from_filter_message, city_from_message, list_for_filterparams)
     get_prices(id_from_filter_message, city_from_message, list_for_filterparams)
-    #urls = get_urls()
     info = []
     zapor = []
     file_of_prices = open('prices_of_products.json', 'r')
@@ -856,13 +837,7 @@ def get_info_products(id_from_filter_message, city_from_message, list_for_filter
             for t in range(len(products_info)):
                 for j in range(len(prices)):
                     if products_info[t]["productId"] == prices[j]["id"]:
-                        #print(products_info[t])
                         products_info[t]["Price"] = prices[j]
-            '''for y in range(len(products_info)):
-                for g in range(len(urls)):
-                    if products_info[y]["productId"] == urls[g][1]:
-                        products_info[y]["URL"] = urls[g][0]'''
-            print(products_info)
             info.append(products_info)
         except json.decoder.JSONDecodeError:
             zapor.append(id[i])
@@ -880,17 +855,6 @@ def func_chunks_generators(lst, n):
         l.append(lst[i : i + n])
     return l
 
-
-#k = 1
-#b = 1
-'''with open("text2.txt", "r", encoding="utf-8") as j:
-    o = j.readlines()
-    z = [y.strip() for y in o]
-
-with open("text1.txt", "r", encoding="utf-8") as f:
-    p = f.readlines()
-    l = [m.strip() for m in p]'''
-
 logging.basicConfig(level=logging.INFO)
 
 TOKEN = "5873310624:AAF596NEnNJJ0hTcYC0PJuJqdxb6ij7Mbj4"
@@ -907,21 +871,6 @@ async def start_handler(message: types.Message):
     user_full_name = message.from_user.full_name
     logging.info(f'{user_id=} {user_full_name=} {time.asctime()}')
     await message.reply(f"Привет, {user_name}")
-
-
-'''@dp.message_handler()
-async def start_handler(message: types.Message):
-    logging.info(f'{time.asctime()}')
-    k = time.asctime()
-    V = datetime.now()
-    print(k)
-    for u in range(len(l)):
-        if (message.text == l[u]) and (datetime.now() >= V + timedelta(hours=24)):
-            await message.answer(random.choice(l))
-            break
-        if (datetime.now() < V + timedelta(hours=24)):
-            await message.answer(random.choice(z))
-            break'''
 
 
 @dp.message_handler(commands=['weather'])
@@ -1260,8 +1209,6 @@ async def cmd_start(message: types.Message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.add("Выйти")
     for t in range(len(cities)):
-        #keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        #button_1 = [cities[i]["cityNameRu"] for i in range(len(cities))]
         button_1 = cities[t]["cityNameRu"]
         keyboard.add(button_1)
     await message.answer("В каком городе вы хотите просмотреть товары?", reply_markup=keyboard)
@@ -1270,7 +1217,6 @@ async def cmd_start(message: types.Message):
         @dp.message_handler(Text(equals=f'{cities[i]["cityNameRu"]}'))
         async def filter_2(message: types.Message):
             filter_of_cities.append(f'{message.text}')
-            #print(filter_of_cities)
             keyboard_2 = types.ReplyKeyboardMarkup(resize_keyboard=True)
             for j in range(len(categories)):
                 button_2 = f'{categories[j]["category"]}'
@@ -1294,7 +1240,6 @@ async def cmd_start(message: types.Message):
                     keyboard_3.add("Фильтры выставлены")
                     for p in range(len(filters_from_file)):
                         keyboard_3.add(filters_from_file[p]["name"])
-                        #print(filters_from_file[p]["name"])
                     await message.answer("Какие фильтры выставить?", reply_markup=keyboard_3)
                     filters_from_message = []
                     for u in range(len(filters_from_file)):
@@ -1369,23 +1314,16 @@ async def cmd_start(message: types.Message):
                                     await message.answer("Сейчас поищу, это займет некоторое время", reply_markup=types.ReplyKeyboardRemove())
                                     for e in range(len(list_str_for_base64)):
                                        list_str_for_base64[e] = str(base64.b64encode(list_str_for_base64[e].encode('utf-8')))[1:]
-                                    #print(list_str_for_base64)
-                                    #print(filter_of_id_category, filter_of_cities)
                                     get_info_products(filter_of_id_category, filter_of_cities, list_str_for_base64)
-                                    #print(get_urls())
                                     list_str_for_base64.clear()
                                     file_of_URLfilteredProducts = open("urls_products.json", 'r')
                                     URLfilterProducts = json.load(file_of_URLfilteredProducts)
                                     file_of_URLfilteredProducts.close()
                                     if len(URLfilterProducts) == 0:
                                         await message.answer("Ничего не найдено", reply_markup=keyboard_2)
-                                    #print("готово")
                                     Urls_of_products = [URLfilterProducts[i]["URL"] for i in range(len(URLfilterProducts))]
                                     l = Urls_of_products
-                                    #print(Urls_of_products, len(Urls_of_products))
-                                    #print("l:", l)
                                     list_split_of_url = func_chunks_generators(Urls_of_products, 4)
-                                    #print(list_split_of_url)
                                     for y in range(len(list_split_of_url[0])):
                                         await message.answer(list_split_of_url[0][y], reply_markup=keyboard_6)
                                         time.sleep(0.5)
@@ -1398,7 +1336,6 @@ async def cmd_start(message: types.Message):
                                     f = open('urls_products.json', 'r')
                                     urls = json.load(f)
                                     l_2 = func_chunks_generators([urls[i]["URL"] for i in range(len(urls))], 4)
-                                    #print(len(l_2))
                                     if indexs_2[-1] < len(l_2):
                                         for h in range(len(l_2[indexs_2[-1]])-1):
                                             await message.answer(l_2[indexs_2[-1]][h])
@@ -1407,7 +1344,6 @@ async def cmd_start(message: types.Message):
                                     else:
                                         await message.answer("Больше ничего нет", reply_markup=keyboard_6)
                                         indexs_2.append(indexs_2[-1] + 1)
-                                    #print(indexs_2)
 
 
 if __name__ == '__main__':
