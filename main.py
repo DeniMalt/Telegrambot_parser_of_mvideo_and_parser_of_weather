@@ -799,7 +799,6 @@ def get_info_products(id_from_filter_message, city_from_message, list_for_filter
     id = get_id(id_from_filter_message, city_from_message, list_for_filterparams)
     get_prices(id_from_filter_message, city_from_message, list_for_filterparams)
     info = []
-    zapor = []
     file_of_prices = open('prices_of_products.json', 'r')
     prices = json.load(file_of_prices)
     for i in range(len(id)):
@@ -845,8 +844,6 @@ def get_info_products(id_from_filter_message, city_from_message, list_for_filter
     file_of_prices.close()
     with open('1_products_info.json', 'w', encoding='utf-8') as file:
         json.dump(info, file, indent=5, ensure_ascii=False)
-
-    return zapor, len(zapor)
 
 
 def func_chunks_generators(lst, n):
